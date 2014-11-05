@@ -24,7 +24,7 @@
 #include <asm/pgtable.h>
 #include <asm/tlbflush.h>
 
-#if defined(CONFIG_MACH_Q1_BD)
+#if defined(CONFIG_MACH_Q1_BD) && defined(SEC_DEBUG)
 #include <mach/sec_debug.h>
 #endif
 
@@ -166,7 +166,7 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 	do_exit(SIGKILL);
 }
 
-#if defined(CONFIG_MACH_Q1_BD)
+#if defined(CONFIG_MACH_Q1_BD) && defined(SEC_DEBUG)
 /*
  * This function can be used while current pointer is invalid.
  */
@@ -310,7 +310,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		return 0;
 
 	tsk = current;
-#if defined(CONFIG_MACH_Q1_BD)
+#if defined(CONFIG_MACH_Q1_BD) && defined(SEC_DEBUG)
 	/*
 	 * If current pointer is NULL, infinite abort can occur.
 	 * It make us get correct debug information in the situation.

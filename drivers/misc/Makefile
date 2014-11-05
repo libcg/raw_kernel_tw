@@ -69,6 +69,7 @@ obj-$(CONFIG_MFD_MAX77693)	+= max77693-muic.o
 obj-$(CONFIG_STMPE811_ADC)	+= stmpe811-adc.o
 obj-$(CONFIG_JACK_MON)		+= jack.o
 obj-$(CONFIG_UART_SELECT)	+= uart_select.o
+obj-$(CONFIG_FSYNC_CONTROL)     += fsync_control.o
 obj-$(CONFIG_WIMAX_CMC)         += max8893.o
 ifeq ($(CONFIG_MUIC_DET_JACK),y)
 obj-$(CONFIG_SEC_DEV_JACK)	+= sec_jack_muic.o
