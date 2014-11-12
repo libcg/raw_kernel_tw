@@ -6888,7 +6888,8 @@ static struct s3cfb_lcd s6e8aa0 = {
 	.p_height = 106,
 	.bpp = 24,
 
-	.freq = 57,
+	/* default 57, max 64. 60hz is a sane choice. */
+	.freq = 60,
 
 	/* minumun value is 0 except for wr_act time. */
 	.cpu_timing = {
