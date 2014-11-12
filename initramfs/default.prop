@@ -1,0 +1,18 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+ro.secure=0
+ro.allow.mock.location=0
+ro.debuggable=1
+persist.sys.usb.config=mtp
+ro.product.model=GT-N7000
+ro.product.brand=Samsung
+ro.product.name=GT-N7000
+ro.product.device=GT-N7000
+ro.product.board=smdk4210
+ro.product.cpu.abi=armeabi-v7a
+ro.product.cpu.abi2=armeabi
+ro.product.manufacturer=samsung
+ro.board.platform=exynos4
+ro.build.product=GT-N7000
+
