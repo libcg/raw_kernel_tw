@@ -1,4 +1,7 @@
-/* * Copyright (C) 2010-2012 ARM Limited. All rights reserved. * * This program is free software and is provided to you under the terms of the GNU General Public License version 2
+/*
+ * Copyright (C) 2010 ARM Limited. All rights reserved.
+ *
+ * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
  *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
@@ -81,7 +84,6 @@ mali_dvfs_table mali_dvfs[MALI_DVFS_STEPS]={
 
 #define ASV_8_LEVEL	8
 #define ASV_5_LEVEL	5
-#define ASV_LEVEL_SUPPORT 0
 
 static unsigned int asv_3d_volt_5_table[ASV_5_LEVEL][MALI_DVFS_STEPS] = {
 	/* L3(160MHz), L2(266MHz) */
@@ -236,16 +238,18 @@ static unsigned int decideNextStatus(unsigned int utilization)
 static mali_bool mali_dvfs_table_update(void)
 {
 	unsigned int exynos_result_of_asv_group;
+	unsigned int target_asv;
 	unsigned int i;
 	exynos_result_of_asv_group = exynos_result_of_asv & 0xf;
-	MALI_PRINT(("exynos_result_of_asv_group = 0x%x\n", exynos_result_of_asv_group));
+	target_asv = exynos_result_of_asv >> 28;
+	MALI_PRINT(("exynos_result_of_asv_group = 0x%x, target_asv = 0x%x\n", exynos_result_of_asv_group, target_asv));
 
-	if (ASV_LEVEL_SUPPORT) { //asv level information will be added.
+	if (target_asv == 0x8) { //SUPPORT_1400MHZ
 		for (i = 0; i < MALI_DVFS_STEPS; i++) {
 			mali_dvfs[i].vol = asv_3d_volt_5_table[exynos_result_of_asv_group][i];
 			MALI_PRINT(("mali_dvfs[%d].vol = %d\n", i, mali_dvfs[i].vol));
 		}
-	} else {
+	} else if (target_asv == 0x4){ //SUPPORT_1200MHZ
 		for (i = 0; i < MALI_DVFS_STEPS; i++) {
 			mali_dvfs[i].vol = asv_3d_volt_8_table[exynos_result_of_asv_group][i];
 			MALI_PRINT(("mali_dvfs[%d].vol = %d\n", i, mali_dvfs[i].vol));
