@@ -1,0 +1,3 @@
+[submodule "exfat"]
+	path = fs/exfat
+	url = https://github.com/dorimanx/exfat-nofuse.git
