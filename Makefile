@@ -374,10 +374,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
-	-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a9 -fno-pic \
-	--sysroot=/home/ali/Downloads/android-ndk-r8e/platforms/android-14/arch-arm \
-	-pipe
-
+		   -mcpu=cortex-a9
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
