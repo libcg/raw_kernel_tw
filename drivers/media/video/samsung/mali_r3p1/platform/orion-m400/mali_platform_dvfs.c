@@ -89,9 +89,9 @@ static unsigned int asv_3d_volt_5_table[ASV_5_LEVEL][MALI_DVFS_STEPS] = {
 	/* L3(160MHz), L2(266MHz) */
 	{1000000, 1100000},	/* S */
 	{1000000, 1100000},	/* A */
-	{ 950000, 1000000},	/* B */
-	{ 950000, 1000000},	/* C */
-	{ 950000,  950000},	/* D */
+	{ 900000,  950000},	/* B */
+	{ 900000,  950000},	/* C */
+	{ 900000,  950000},	/* D */
 };
 
 static unsigned int asv_3d_volt_8_table[ASV_8_LEVEL][MALI_DVFS_STEPS] = {
