@@ -35,10 +35,8 @@
 #define MAX_SAMPLING_DOWN_FACTOR		(100000)
 
 #if defined(CONFIG_MACH_SLP_PQ)
-#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL	(5)
 #define MICRO_FREQUENCY_UP_THRESHOLD		(85)
 #else
-#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL	(3)
 #define MICRO_FREQUENCY_UP_THRESHOLD		(95)
 #endif
 
@@ -579,7 +577,7 @@ static void dbs_freq_increase(struct cpufreq_policy *p, unsigned int freq)
 
 static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 {
-	unsigned int max_load_freq;
+	unsigned int max_load;
 
 	struct cpufreq_policy *policy;
 	unsigned int j;
@@ -589,25 +587,18 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 	/*
 	 * Every sampling_rate, we check, if current idle time is less
-	 * than 20% (default), then we try to increase frequency
-	 * Every sampling_rate, we look for a the lowest
-	 * frequency which can sustain the load while keeping idle time over
-	 * 30%. If such a frequency exist, we try to decrease to this frequency.
-	 *
-	 * Any frequency increase takes it to the maximum frequency.
-	 * Frequency reduction happens at minimum steps of
-	 * 5% (default) of current frequency
+	 * than 20% (default), then we try to increase frequency. Else,
+	 * we adjust the frequency proportional to load.
 	 */
 
-	/* Get Absolute Load - in terms of freq */
-	max_load_freq = 0;
+	/* Get Absolute Load */
+	max_load = 0;
 
 	for_each_cpu(j, policy->cpus) {
 		struct cpu_dbs_info_s *j_dbs_info;
 		cputime64_t cur_wall_time, cur_idle_time, cur_iowait_time;
 		unsigned int idle_time, wall_time, iowait_time;
-		unsigned int load, load_freq;
-		int freq_avg;
+		unsigned int load;
 
 		j_dbs_info = &per_cpu(od_cpu_dbs_info, j);
 
@@ -658,17 +649,12 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 		load = 100 * (wall_time - idle_time) / wall_time;
 
-		freq_avg = __cpufreq_driver_getavg(policy, j);
-		if (freq_avg <= 0)
-			freq_avg = policy->cur;
-
-		load_freq = load * freq_avg;
-		if (load_freq > max_load_freq)
-			max_load_freq = load_freq;
+		if (load > max_load)
+			max_load = load;
 	}
 
 	/* Check for frequency increase */
-	if (max_load_freq > dbs_tuners_ins.up_threshold * policy->cur) {
+	if (max_load > dbs_tuners_ins.up_threshold) {
 		int inc = (policy->max * dbs_tuners_ins.freq_step) / 100;
 		int target = min(policy->max, policy->cur + inc);
 		/* If switching to max speed, apply sampling_down_factor */
@@ -677,27 +663,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 				dbs_tuners_ins.sampling_down_factor;
 		dbs_freq_increase(policy, target);
 		return;
-	}
-
-	/* Check for frequency decrease */
-#if !defined(CONFIG_ARCH_EXYNOS4) && !defined(CONFIG_ARCH_EXYNOS5)
-	/* if we cannot reduce the frequency anymore, break out early */
-	if (policy->cur == policy->min)
-		return;
-#endif
-
-	/*
-	 * The optimal frequency is the frequency that is the lowest that
-	 * can support the current CPU usage without triggering the up
-	 * policy. To be safe, we focus 10 points under the threshold.
-	 */
-	if (max_load_freq <
-	    (dbs_tuners_ins.up_threshold - dbs_tuners_ins.down_differential) *
-	     policy->cur) {
+	} else {
 		unsigned int freq_next;
-		freq_next = max_load_freq /
-				(dbs_tuners_ins.up_threshold -
-				 dbs_tuners_ins.down_differential);
+		freq_next = max_load * policy->cpuinfo.max_freq / 100;
 
 		/* No longer fully busy, reset rate_mult */
 		this_dbs_info->rate_mult = 1;
@@ -948,8 +916,6 @@ static int __init cpufreq_gov_dbs_init(void)
 	if (idle_time != -1ULL) {
 		/* Idle micro accounting is supported. Use finer thresholds */
 		dbs_tuners_ins.up_threshold = MICRO_FREQUENCY_UP_THRESHOLD;
-		dbs_tuners_ins.down_differential =
-					MICRO_FREQUENCY_DOWN_DIFFERENTIAL;
 		/*
 		 * In no_hz/micro accounting case we set the minimum frequency
 		 * not depending on HZ, but fixed (very low). The deferred
