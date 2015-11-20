@@ -914,7 +914,7 @@ static int update_brightness(struct lcd_info *lcd, u8 force)
 
 		lcd->current_bl = lcd->bl;
 
-		dev_info(&lcd->ld->dev, "brightness=%d, bl=%d, candela=%d\n", brightness, lcd->bl, candela_table[lcd->bl]);
+		dev_dbg(&lcd->ld->dev, "brightness=%d, bl=%d, candela=%d\n", brightness, lcd->bl, candela_table[lcd->bl]);
 	}
 
 	mutex_unlock(&lcd->bl_lock);
@@ -1087,7 +1087,7 @@ static int s6e8ax0_check_fb(struct lcd_device *ld, struct fb_info *fb)
 	struct s3cfb_window *win = fb->par;
 	struct lcd_info *lcd = lcd_get_data(ld);
 
-	dev_info(&lcd->ld->dev, "%s, fb%d\n", __func__, win->id);
+	dev_dbg(&lcd->ld->dev, "%s, fb%d\n", __func__, win->id);
 
 	return 0;
 }
