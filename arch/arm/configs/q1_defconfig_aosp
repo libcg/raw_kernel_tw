@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 3.0.31 Kernel Configuration
+# Linux/arm 3.0.101 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -2385,6 +2385,7 @@ CONFIG_SND_SOC_USE_EXTERNAL_MIC_BIAS=y
 # CONFIG_SOUND_PRIME is not set
 CONFIG_HID_SUPPORT=y
 CONFIG_HID=y
+CONFIG_UHID=y
 # CONFIG_HIDRAW is not set
 
 #
