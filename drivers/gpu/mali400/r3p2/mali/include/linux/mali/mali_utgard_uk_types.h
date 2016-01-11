@@ -61,16 +61,17 @@ typedef enum
 {
 	/** Core functions */
 
-    _MALI_UK_OPEN                    = 0, /**< _mali_ukk_open() */
-    _MALI_UK_CLOSE,                       /**< _mali_ukk_close() */
-    _MALI_UK_WAIT_FOR_NOTIFICATION,       /**< _mali_ukk_wait_for_notification() */
-    _MALI_UK_GET_API_VERSION,             /**< _mali_ukk_get_api_version() */
-    _MALI_UK_POST_NOTIFICATION,           /**< _mali_ukk_post_notification() */
-	_MALI_UK_GET_USER_SETTING,       /**< _mali_ukk_get_user_setting() *//**< [out] */
-	_MALI_UK_GET_USER_SETTINGS,       /**< _mali_ukk_get_user_settings() *//**< [out] */
-	_MALI_UK_STREAM_CREATE,           /**< _mali_ukk_stream_create() */
-	_MALI_UK_FENCE_CREATE_EMPTY,           /**< _mali_ukk_fence_create_empty() */
-	_MALI_UK_FENCE_VALIDATE,          /**< _mali_ukk_fence_validate() */
+    _MALI_UK_OPEN                    = 0,	/**< _mali_ukk_open() */
+    _MALI_UK_CLOSE,							/**< _mali_ukk_close() */
+    _MALI_UK_WAIT_FOR_NOTIFICATION,			/**< _mali_ukk_wait_for_notification() */
+    _MALI_UK_GET_API_VERSION,				/**< _mali_ukk_get_api_version() */
+    _MALI_UK_POST_NOTIFICATION,				/**< _mali_ukk_post_notification() */
+	_MALI_UK_GET_USER_SETTING,				/**< _mali_ukk_get_user_setting() *//**< [out] */
+	_MALI_UK_GET_USER_SETTINGS,				/**< _mali_ukk_get_user_settings() *//**< [out] */
+	_MALI_UK_STREAM_CREATE,					/**< _mali_ukk_stream_create() */
+	_MALI_UK_FENCE_CREATE_EMPTY,			/**< _mali_ukk_fence_create_empty() */
+	_MALI_UK_FENCE_CREATE_SIGNALLED,		/**< _mali_ukk_fence_create_signalled() */
+	_MALI_UK_FENCE_VALIDATE,				/**< _mali_ukk_fence_validate() */
 
 	/** Memory functions */
 
@@ -721,7 +722,7 @@ typedef struct
  * The 16bit integer is stored twice in a 32bit integer
  * For example, for version 1 the value would be 0x00010001
  */
-#define _MALI_API_VERSION 23
+#define _MALI_API_VERSION 29
 #define _MALI_UK_API_VERSION _MAKE_VERSION_ID(_MALI_API_VERSION)
 
 /**
@@ -1143,6 +1144,15 @@ typedef struct
 	s32 stream;                     /**< [in] stream to create fence on */
 	s32 fence;                      /**< [out] file descriptor describing fence */
 } _mali_uk_fence_create_empty_s;
+
+/** @brief Create signalled fence
+*/
+typedef struct
+{
+	void *ctx;                      /**< [in,out] user-kernel context (trashed on output) */
+	s32 stream;                     /**< [in] stream to create fence on */
+	s32 fence;                      /**< [out] file descriptor describing fence */
+} _mali_uk_fence_create_signalled_s;
 
 /** @brief Check fence validity
  */
